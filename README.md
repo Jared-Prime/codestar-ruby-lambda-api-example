@@ -32,7 +32,7 @@ local computer. If you haven't, do that first. You can find instructions in the 
    need without affecting the system Ruby installation. At the terminal, type
    the following command:
 
-        $ rbenv local 2.7
+        $ rbenv local 2.7.1
 
 3. Install the SAM CLI. For details see 
    https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-sam-cli-install.html

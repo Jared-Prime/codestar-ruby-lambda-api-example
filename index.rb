@@ -1,3 +1,5 @@
+require 'time'
+
 def handler(**_)
   {
     statusCode: 200,
