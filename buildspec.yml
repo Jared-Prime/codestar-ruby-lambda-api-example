@@ -32,6 +32,7 @@ artifacts:
     - template-configuration.json
 
 cache:
-  - Gemfile
-  - Gemfile.lock
-  - vendor/bundle
+  paths:
+    - Gemfile
+    - Gemfile.lock
+    - vendor/bundle
