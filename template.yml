@@ -24,6 +24,15 @@ Globals:
       Role: !Ref CodeDeployRole
 
 Resources:
+  MyS3Bucket:
+    Type: AWS::S3::Bucket
+    Properties: 
+      AccessControl: Private
+      DeletionPolicy: Retain
+      Tags:
+        - Key: Name
+          Value: !Ref AWS::StackName
+
   HelloWorld:
     Type: AWS::Serverless::Function
     Properties:
