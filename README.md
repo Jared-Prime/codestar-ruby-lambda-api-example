@@ -1,7 +1,7 @@
 Welcome to the AWS CodeStar sample web service
 ==============================================
 
-This sample code helps get you started with a simple Python web service using
+This sample code helps get you started with a simple Ruby web service using
 AWS Lambda and Amazon API Gateway.
 
 What's Here
@@ -12,7 +12,7 @@ This sample includes:
 * README.md - this file
 * buildspec.yml - this file is used by AWS CodeBuild to package your
   application for deployment to AWS Lambda
-* index.py - this file contains the sample Python code for the web service
+* index.py - this file contains the sample Ruby code for the web service
 * template.yml - this file contains the AWS Serverless Application Model (AWS SAM) used
   by AWS CloudFormation to deploy your application to AWS Lambda and Amazon API
   Gateway.
@@ -27,16 +27,12 @@ These directions assume you want to develop on your development environment or a
 To work on the sample code, you'll need to clone your project's repository to your
 local computer. If you haven't, do that first. You can find instructions in the AWS CodeStar user guide at https://docs.aws.amazon.com/codestar/latest/userguide/getting-started.html#clone-repo.
 
-1. Create a Python virtual environment. This virtual
+1. Create a Ruby virtual environment. This virtual
    environment allows you to isolate this project and install any packages you
-   need without affecting the system Python installation. At the terminal, type
+   need without affecting the system Ruby installation. At the terminal, type
    the following command:
 
-        $ virtualenv .venv
-
-2. Activate the virtual environment:
-
-        $ source .venv/bin/activate
+        $ rbenv local 2.7
 
 3. Install the SAM CLI. For details see 
    https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-sam-cli-install.html
@@ -58,7 +54,7 @@ progress on your AWS CodeStar project dashboard.)Once you've seen how that works
 start developing your own code, and have fun!
 
 To run your tests locally, go to the root directory of the
-sample code and run the `python -m unittest discover tests` command, which
+sample code and run the `bundle exec rspec` command, which
 AWS CodeBuild also runs through your `buildspec.yml` file.
 
 To test your new code during the release process, modify the existing tests or
