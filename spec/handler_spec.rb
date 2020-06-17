@@ -1,6 +1,3 @@
-require 'rspec'
-require './index'
-
 RSpec.describe 'lambda handler' do
   let(:result) { handler }
 
