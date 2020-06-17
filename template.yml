@@ -28,7 +28,6 @@ Resources:
     Type: AWS::S3::Bucket
     Properties: 
       AccessControl: Private
-      DeletionPolicy: Retain
       Tags:
         - Key: Name
           Value: !Ref AWS::StackName
