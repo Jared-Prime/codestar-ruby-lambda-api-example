@@ -1,4 +1,5 @@
 require 'time'
+require 'json'
 
 def handler(**_)
   {
@@ -6,7 +7,7 @@ def handler(**_)
     body: {
       output: 'Hello World',
       timestamp: Time.now.utc.iso8601
-    },
+    }.to_json,
     headers: { 'Content-Type' => 'application/json' }
   }
 end
