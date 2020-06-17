@@ -8,7 +8,7 @@ phases:
 
       # Upgrade AWS CLI to the latest version
       - pip install --upgrade awscli
-      - bundle install
+      - bundle install --path vendor/bundle
 
   pre_build:
     commands:
@@ -30,3 +30,8 @@ artifacts:
   files:
     - template-export.yml
     - template-configuration.json
+
+cache:
+  - Gemfile
+  - Gemfile.lock
+  - vendor/bundle
