@@ -31,7 +31,7 @@ Resources:
         - AttributeName: my_database_id
           AttributeType: S
       KeySchema:
-        - KeyName: my_database_id
+        - AttributeName: my_database_id
           KeyType: HASH
       ProvisionedThroughput: 
         ReadCapacityUnits: 0
