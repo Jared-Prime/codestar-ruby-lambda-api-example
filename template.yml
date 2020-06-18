@@ -24,13 +24,18 @@ Globals:
       Role: !Ref CodeDeployRole
 
 Resources:
-  MyS3Bucket:
-    Type: AWS::S3::Bucket
-    Properties: 
-      AccessControl: Private
-      Tags:
-        - Key: Name
-          Value: !Ref AWS::StackName
+  MyDatabase:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      AttributeDefinitions:
+        - AttributeName: my_database_id
+          AttributeType: S
+      KeySchema:
+        - KeyName: my_database_id
+          KeyType: HASH
+      ProvisionedThroughput: 
+        ReadCapacityUnits: 0
+        WriteCapacityUnits: 0
 
   HelloWorld:
     Type: AWS::Serverless::Function
@@ -75,7 +80,7 @@ Resources:
                   - dynamodb:putItem
                   - dynamodb:updateItem
                   - dynamodb:updateTable
-                Resource: !GetAtt VoterProfilesDB.Arn
+                Resource: !GetAtt MyDatabase.Arn
       Path: /
       ManagedPolicyArns:
         - !Sub 'arn:${AWS::Partition}:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole'
