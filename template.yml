@@ -33,9 +33,7 @@ Resources:
       KeySchema:
         - AttributeName: my_database_id
           KeyType: HASH
-      ProvisionedThroughput: 
-        ReadCapacityUnits: 0
-        WriteCapacityUnits: 0
+      BillingMode: PAY_PER_REQUEST
 
   HelloWorld:
     Type: AWS::Serverless::Function
