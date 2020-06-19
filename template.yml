@@ -60,7 +60,8 @@ Resources:
   MyDatabaseAccess:
     Type: AWS::IAM::ManagedPolicy
     Properties:
-      PolicyName: DynamoDB-access
+      Description: Policy for accessing the DynamoDB table
+      Path: /
       PolicyDocument:
         Version: 2012-10-17
         Statement:
