@@ -69,18 +69,6 @@ Resources:
             Service: [lambda.amazonaws.com]
           Action: sts:AssumeRole
       Path: /
-      Policies:
-        - PolicyName: dynamodb
-          PolicyDocument:
-            Version: 2012-10-17
-            Statement:
-              - Effect: Allow
-                Action:
-                  - dynamodb:DescribeTable
-                  - dynamodb:GetItem
-                  - dynamodb:UpdateItem
-                  - dynamodb:PutItem
-                Resource: !GetAtt MyDatabase.Arn
       ManagedPolicyArns:
         - !Sub 'arn:${AWS::Partition}:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole'
       PermissionsBoundary: !Sub 'arn:${AWS::Partition}:iam::${AWS::AccountId}:policy/CodeStar_${ProjectId}_PermissionsBoundary'
