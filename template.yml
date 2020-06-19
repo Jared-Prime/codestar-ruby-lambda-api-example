@@ -57,22 +57,6 @@ Resources:
             Path: /
             Method: post
 
-  MyDatabaseAccess:
-    Type: AWS::IAM::ManagedPolicy
-    Properties:
-      Description: Policy for accessing the DynamoDB table
-      Path: /
-      PolicyDocument:
-        Version: 2012-10-17
-        Statement:
-          - Effect: Allow
-            Action:
-              - dynamodb:DescribeTable
-              - dynamodb:GetItem
-              - dynamodb:UpdateItem
-              - dynamodb:PutItem
-            Resource: !GetAtt MyDatabase.Arn
-
   LambdaExecutionRole:
     Description: Creating service role in IAM for AWS Lambda
     Type: AWS::IAM::Role
@@ -85,6 +69,18 @@ Resources:
             Service: [lambda.amazonaws.com]
           Action: sts:AssumeRole
       Path: /
+      Policies:
+        - PolicyName: dynamodb
+          PolicyDocument:
+            Version: 2012-10-17
+            Statement:
+              - Effect: Allow
+                Action:
+                  - dynamodb:DescribeTable
+                  - dynamodb:GetItem
+                  - dynamodb:UpdateItem
+                  - dynamodb:PutItem
+                Resource: !GetAtt MyDatabase.Arn
       ManagedPolicyArns:
         - !Sub 'arn:${AWS::Partition}:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole'
         - !Ref MyDatabaseAccess
