@@ -61,8 +61,6 @@ Resources:
     Type: AWS::IAM::Policy
     Properties:
       PolicyName: DynamoDB-access
-      Roles:
-       - !Ref LambdaExecutionRole
       PolicyDocument:
         Version: 2012-10-17
         Statement:
@@ -88,4 +86,5 @@ Resources:
       Path: /
       ManagedPolicyArns:
         - !Sub 'arn:${AWS::Partition}:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole'
+        - !GetAtt MyDatabaseAccess.Arn
       PermissionsBoundary: !Sub 'arn:${AWS::Partition}:iam::${AWS::AccountId}:policy/CodeStar_${ProjectId}_PermissionsBoundary'
