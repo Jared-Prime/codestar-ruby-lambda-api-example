@@ -56,6 +56,24 @@ Resources:
           Properties:
             Path: /
             Method: post
+
+  MyDatabaseAccess:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyName: DynamoDB-access
+      Roles:
+       - !Ref LambdaExecutionRole
+      PolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Action:
+              - dynamodb:DescribeTable
+              - dynamodb:GetItem
+              - dynamodb:UpdateItem
+              - dynamodb:PutItem
+            Resource: !GetAtt MyDatabase.Arn
+
   LambdaExecutionRole:
     Description: Creating service role in IAM for AWS Lambda
     Type: AWS::IAM::Role
