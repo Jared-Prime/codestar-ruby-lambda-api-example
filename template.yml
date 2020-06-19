@@ -58,7 +58,7 @@ Resources:
             Method: post
 
   MyDatabaseAccess:
-    Type: AWS::IAM::Policy
+    Type: AWS::IAM::ManagedPolicy
     Properties:
       PolicyName: DynamoDB-access
       PolicyDocument:
