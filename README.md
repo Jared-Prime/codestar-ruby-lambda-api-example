@@ -1,89 +1,100 @@
-Welcome to the AWS CodeStar sample web service
-==============================================
+# CodeStar - Ruby Lambda API Example
 
-This sample code helps get you started with a simple Ruby web service using
-AWS Lambda and Amazon API Gateway.
+## Local Setup
 
-What's Here
------------
+A local setup isn't necessary for this tutorial, but it can be helpful for development purposes. The `sam` tool will allow you to run and test code locally.
 
-This sample includes:
+```
+$ brew tap aws/tap
+$ brew install rbenv aws-sam-cli
+$ rbenv init
+$ rbenv install 2.7.1
+$ rbenv local 2.7.1
+```
 
-* README.md - this file
-* buildspec.yml - this file is used by AWS CodeBuild to package your
-  application for deployment to AWS Lambda
-* index.rb - this file contains the sample Ruby code for the web service
-* template.yml - this file contains the AWS Serverless Application Model (AWS SAM) used
-  by AWS CloudFormation to deploy your application to AWS Lambda and Amazon API
-  Gateway.
-* tests/ - this directory contains unit tests for your application
-* template-configuration.json - this file contains the project ARN with placeholders used for tagging resources with the project ID
+Start the local service with
 
-Getting Started
----------------
+```
+$ sam local start-api -p 8080
+```
 
-These directions assume you want to develop on your development environment or a Cloud9 environment.
+## CodeStar Setup
 
-To work on the sample code, you'll need to clone your project's repository to your
-local computer. If you haven't, do that first. You can find instructions in the AWS CodeStar user guide at https://docs.aws.amazon.com/codestar/latest/userguide/getting-started.html#clone-repo.
+AWS provides many CodeStart templates, but in our case there is no Ruby web service template given. We can create one with slight modifications to the Python template.
 
-1. Create a Ruby virtual environment. This virtual
-   environment allows you to isolate this project and install any packages you
-   need without affecting the system Ruby installation. At the terminal, type
-   the following command:
+### Create a CodeStar Web Service, Lambda Template
 
-        $ rbenv local 2.7.1
+Create a new project, and choose "Web service" and "AWS Lambda" from the filter list to find the Python template.
 
-3. Install the SAM CLI. For details see 
-   https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-sam-cli-install.html
+![Web Service Lambda Template](screenshot/1-web-service-lambda-template.png)
 
-4. Start the development server:
+Next, select the CodeCommit option for the source code. By default, CodeStar creates a new repository, so since we have an existing repository in Github, we'll create a dummy repo and replace it later.
 
-        $ sam local start-api -p 8080
+![Choose CodeCommit](screenshot/2-choose-code-commit.png)
 
-5. Open http://127.0.0.1:8080/ in a web browser to view your service.
+Wait for the project to create it's initial build.
 
-What Do I Do Next?
-------------------
+![CodeStar Dashboard](screenshot/3-codestar-dashboard.png)
 
-If you have checked out a local copy of your repository you can start making changes
-to the sample code.  We suggest making a small change to index.py first, so you can
-see how changes pushed to your project's repository are automatically picked up by your
-project pipeline and deployed to AWS Lambda and Amazon API Gateway. (You can watch the pipeline
-progress on your AWS CodeStar project dashboard.)Once you've seen how that works,
-start developing your own code, and have fun!
+### Edit CodePipeline Source Repository
 
-To run your tests locally, go to the root directory of the
-sample code and run the `bundle exec rspec` command, which
-AWS CodeBuild also runs through your `buildspec.yml` file.
+Find the CodePipleline representing the CD workflow. Click to edit the pipeline...
 
-To test your new code during the release process, modify the existing tests or
-add tests to the tests directory. AWS CodeBuild will run the tests during the
-build stage of your project pipeline. You can find the test results
-in the AWS CodeBuild console.
+![Edit CodePipeline](screenshot/4-a-edit-pipeline.png)
 
-Learn more about AWS CodeBuild and how it builds and tests your application here:
-https://docs.aws.amazon.com/codebuild/latest/userguide/concepts.html
+...edit the "source" stage...
 
-Learn more about AWS Serverless Application Model (AWS SAM) and how it works here:
-https://github.com/awslabs/serverless-application-model/blob/master/HOWTO.md
+![Edit Source](screenshot/4-b-edit-source.png)
 
-AWS Lambda Developer Guide:
-http://docs.aws.amazon.com/lambda/latest/dg/deploying-lambda-apps.html
+...and edit the source action...
 
-Learn more about AWS CodeStar by reading the user guide, and post questions and
-comments about AWS CodeStar on our forum.
+![Edit Source](screenshot/4-b-edit-source-2.png)
 
-User Guide: http://docs.aws.amazon.com/codestar/latest/userguide/welcome.html
+...switching the repo from CodeCommit to Github. We can now select our existing repository after authenticating with Github.
 
-Forum: https://forums.aws.amazon.com/forum.jspa?forumID=248
+![Switch to Github](screenshot/4-c-switch-to-github-repo.png)
 
-What Should I Do Before Running My Project in Production?
-------------------
+Save, and trigger a redeployment from the updated source code.
 
-AWS recommends you review the security best practices recommended by the framework
-author of your selected sample application before running it in production. You
-should also regularly review and apply any available patches or associated security
-advisories for dependencies used within your application.
+![Redeploy from source](screenshot/4-d-redeploy.png)
 
-Best Practices: https://docs.aws.amazon.com/codestar/latest/userguide/best-practices.html?icmpid=docs_acs_rm_sec
+### Edit IAM Permissions Boundary and Policy
+
+If you noticed, the template from the initial setup did not contain a DynamoDB resource, whereas the `template.yml` in our setup does. This demo will successfully create a DynamoDB table; to use it in our lambda function, we'll need to take a pair of manual steps.
+
+#### Edit Permissions Boundary
+
+Navigate to CloudFormation and find the stack matching the CodeStar project name. You should see two:
+
+  - my-code-star-project-infrastructure
+  - my-code-star-project
+
+The second, earlier stack `my-code-star-project` is the _base stack_. Go to this one first, and enter the resources tab.
+
+Find the PermissionsBoundaryPolicy, and click on the ID link.
+
+![Edit permissions boundary](screenshot/5-a-edit-permissions-boundary.png)
+
+From the IAM view, click on "Edit Policy" and then "Add additional permissions". We'll create a DynamoDB permissions for select Read and Write actions on all resources. Save the policy.
+
+#### Edit Lambda Execcution Role
+
+Return to CloudFormation, and now enter the second stack, `my-code-star-project-infrastructure`.
+
+Find the LambdaExecutionRole, and click on the ID link.
+
+![Edit execution role policies](screenshot/5-b-edit-execution-role.png)
+
+Now, choose "Add inline policy". We'll create a DynamoDB permissions for select Read and Write actions, *but* we'll make this for specific resources. Supply the DynamoDB table name that was generated by the CloudFormation stack template.
+
+![Add DynamoDB table name in arn](screenshot/5-b-add-dynamodb-table-arn.png)
+
+Save this, then navigate to the Lambda function to confirm.
+
+![Verify permissions in Lambda](screenshot/5-b-check-lambda-function.png)
+
+#### Why the manual steps?
+
+A permissions boundary specifies the maximum permissions allowed on resources. When CodeStar created a project for us, the permissions boundary did not include DynamoDB, and therefore we could not exapand the lambda function's permissions to have read/write access to any DynamoDB tables -- even ones we create in the `template.yml` during the deployment.
+
+This is a necessary limitation of CodeStar, as it simply provides a set of standard templates for a full CI/CD experience without worrying about CloudFormation. If we want something outside that experience, then we need to drop down to the templates.
